@@ -211,24 +211,27 @@ if len(df_pure) > 0 and col_pred in df_pure.columns:
     ))
 
 # Garis pembatas zona
-fig_detail.add_vrect(
-    x0=PURE_PROJ_START, x1=PROJ_END,
-    fillcolor="rgba(245,158,11,0.06)",
-    layer="below", line_width=0,
+fig_detail.add_shape(
+    type="line", xref="x", yref="paper",
+    x0=PURE_PROJ_START, x1=PURE_PROJ_START, y0=0, y1=1,
+    line=dict(color="#F59E0B", width=1.5, dash="dash"),
 )
-fig_detail.add_vline(
-    x=PURE_PROJ_START,
-    line_dash="dash", line_color="#F59E0B", line_width=1.5,
-    annotation_text="▶ Proyeksi Murni",
-    annotation_position="top right",
-    annotation_font=dict(color="#F59E0B", size=11),
+fig_detail.add_annotation(
+    x=PURE_PROJ_START, yref="paper", y=0.98,
+    text="▶ Proyeksi Murni", showarrow=False,
+    font=dict(color="#F59E0B", size=11),
+    xanchor="left", bgcolor="rgba(255,255,255,0.7)",
 )
-fig_detail.add_vline(
-    x=BACKTEST_START,
-    line_dash="dot", line_color="#94A3B8", line_width=1.2,
-    annotation_text="▶ Backtesting",
-    annotation_position="top right",
-    annotation_font=dict(color="#94A3B8", size=10),
+fig_detail.add_shape(
+    type="line", xref="x", yref="paper",
+    x0=BACKTEST_START, x1=BACKTEST_START, y0=0, y1=1,
+    line=dict(color="#94A3B8", width=1.2, dash="dot"),
+)
+fig_detail.add_annotation(
+    x=BACKTEST_START, yref="paper", y=0.88,
+    text="▶ Backtesting", showarrow=False,
+    font=dict(color="#94A3B8", size=10),
+    xanchor="left", bgcolor="rgba(255,255,255,0.7)",
 )
 fig_detail.add_hline(y=0, line_color="#CBD5E1", line_width=0.8)
 
@@ -295,23 +298,20 @@ st.caption(f"5 model terbaik ditampilkan bersamaan · Zona proyeksi murni 2026 Q
 fig_comp = go.Figure()
 
 # Latar zona proyeksi murni
-fig_comp.add_vrect(
-    x0=PURE_PROJ_START, x1=PROJ_END,
-    fillcolor="rgba(245,158,11,0.07)",
-    layer="below", line_width=0,
-    annotation_text="PROYEKSI MURNI",
-    annotation_position="top left",
-    annotation_font=dict(color="#B45309", size=10, family="monospace"),
+fig_comp.add_shape(
+    type="line", xref="x", yref="paper",
+    x0=PURE_PROJ_START, x1=PURE_PROJ_START, y0=0, y1=1,
+    line=dict(color="#F59E0B", width=1.5, dash="dash"),
+)
+fig_comp.add_annotation(
+    x=PURE_PROJ_START, yref="paper", y=0.98,
+    text="▶ PROYEKSI MURNI", showarrow=False,
+    font=dict(color="#B45309", size=10, family="monospace"),
+    xanchor="left", bgcolor="rgba(255,255,255,0.7)",
 )
 
 # Garis nol
 fig_comp.add_hline(y=0, line_color="#CBD5E1", line_width=0.8)
-
-# Garis pembatas zona murni
-fig_comp.add_vline(
-    x=PURE_PROJ_START,
-    line_dash="dash", line_color="#F59E0B", line_width=1.5,
-)
 
 # Plot semua 5 model — hanya zona proyeksi (backtest + murni) agar chart fokus
 df_proj_zone = df_prov_proj[
