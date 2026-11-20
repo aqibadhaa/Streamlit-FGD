@@ -7,9 +7,9 @@
 streamlit_app/
 ├── app.py                        ← Entry point & landing page
 ├── pages/
-│   ├── 1_🏠_Dashboard.py         ← KPI, leaderboard model, tren historis
-│   ├── 2_🔮_Proyeksi_Interaktif.py ← Simulasi skenario & proyeksi 2025–2027
-│   └── 3_🧠_Interpretasi_SHAP.py  ← XAI — kontribusi variabel makro
+│   ├── Dashboard.py         ← KPI, leaderboard model, tren historis
+│   ├── Proyeksi_Interaktif.py ← Simulasi skenario & proyeksi 2025–2027
+│   └── Interpretasi_SHAP.py  ← XAI — kontribusi variabel makro
 ├── utils/
 │   └── data_loader.py            ← Loader terpusat (cached)
 ├── assets/                       ← Dataset CSV + file pkl model
