@@ -240,14 +240,26 @@ fig_detail.update_layout(
     height=480,
     yaxis_title="PDRB Growth YoY (%)",
     hovermode="x unified",
-    legend=dict(orientation="h", y=-0.22, x=0),
+    legend=dict(
+        orientation="h", y=-0.22, x=0,
+        font=dict(size=11, color="#2D3748"),
+    ),
     plot_bgcolor="white", paper_bgcolor="white",
     margin=dict(l=10, r=10, t=20, b=80),
-    font=dict(size=11),
+    font=dict(size=11, color="#2D3748"),
     xaxis=dict(
         rangeslider=dict(visible=True, thickness=0.06),
         type="category",
         gridcolor="#F7FAFC",
+        tickangle=-45,
+        tickfont=dict(size=11, color="#4A5568"),
+        title_font=dict(size=12, color="#2D3748"),
+        linecolor="#CBD5E0",
+    ),
+    yaxis=dict(
+        tickfont=dict(size=11, color="#4A5568"),
+        title_font=dict(size=12, color="#2D3748"),
+        linecolor="#CBD5E0",
     ),
 )
 fig_detail.update_yaxes(gridcolor="#F7FAFC")
@@ -359,11 +371,25 @@ fig_comp.update_layout(
     height=440,
     yaxis_title="PDRB Growth YoY (%)",
     hovermode="x unified",
-    legend=dict(orientation="h", y=-0.25, x=0, font=dict(size=10)),
+    legend=dict(
+        orientation="h", y=-0.25, x=0,
+        font=dict(size=10, color="#2D3748"),
+    ),
     plot_bgcolor="white", paper_bgcolor="white",
     margin=dict(l=10, r=10, t=20, b=90),
-    font=dict(size=11),
-    xaxis=dict(gridcolor="#F7FAFC", tickangle=-45),
+    font=dict(size=11, color="#2D3748"),
+    xaxis=dict(
+        gridcolor="#F7FAFC",
+        tickangle=-45,
+        tickfont=dict(size=11, color="#4A5568"),
+        title_font=dict(size=12, color="#2D3748"),
+        linecolor="#CBD5E0",
+    ),
+    yaxis=dict(
+        tickfont=dict(size=11, color="#4A5568"),
+        title_font=dict(size=12, color="#2D3748"),
+        linecolor="#CBD5E0",
+    ),
 )
 fig_comp.update_yaxes(gridcolor="#F7FAFC")
 st.plotly_chart(fig_comp, use_container_width=True)
