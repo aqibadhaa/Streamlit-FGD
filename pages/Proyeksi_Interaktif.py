@@ -143,16 +143,8 @@ col_pred = sel["col"]
 
 fig_detail = go.Figure()
 
-# 1. Historis aktual (2011-2024)
-fig_detail.add_trace(go.Scatter(
-    x=df_hist["Period"], y=df_hist[TARGET],
-    mode="lines",
-    name="Aktual 2011-2024",
-    line=dict(color="#94A3B8", width=1.8),
-    hovertemplate="%{x}: <b>%{y:.2f}%</b><extra>Aktual</extra>",
-))
-
-# 2. Backtesting (2025 Q1 - 2026 Q2) -- aktual vs prediksi
+# Chart dimulai dari backtesting (2025 Q1) -- ringkas, fokus ke performa model
+# 1. Backtesting (2025 Q1 - 2026 Q2) -- aktual vs prediksi
 if len(df_back) > 0 and "Aktual" in df_back.columns:
     df_back_act = df_back[df_back["Aktual"].notna()]
     if len(df_back_act) > 0:
@@ -211,7 +203,7 @@ if len(df_pure) > 0 and col_pred in df_pure.columns:
         hoverinfo="skip",
     ))
 
-# Garis pembatas zona
+# Garis pembatas zona -- hanya pemisah backtesting vs proyeksi murni
 fig_detail.add_shape(
     type="line", xref="x", yref="paper",
     x0=PURE_PROJ_START, x1=PURE_PROJ_START, y0=0, y1=1,
@@ -221,17 +213,6 @@ fig_detail.add_annotation(
     x=PURE_PROJ_START, yref="paper", y=0.98,
     text="Proyeksi Murni", showarrow=False,
     font=dict(color="#718096", size=11),
-    xanchor="left", bgcolor="rgba(255,255,255,0.75)",
-)
-fig_detail.add_shape(
-    type="line", xref="x", yref="paper",
-    x0=BACKTEST_START, x1=BACKTEST_START, y0=0, y1=1,
-    line=dict(color="#CBD5E0", width=1.2, dash="dot"),
-)
-fig_detail.add_annotation(
-    x=BACKTEST_START, yref="paper", y=0.88,
-    text="Backtesting", showarrow=False,
-    font=dict(color="#A0AEC0", size=10),
     xanchor="left", bgcolor="rgba(255,255,255,0.75)",
 )
 fig_detail.add_hline(y=0, line_color="#E2E8F0", line_width=0.8)
@@ -248,7 +229,6 @@ fig_detail.update_layout(
     margin=dict(l=10, r=10, t=20, b=80),
     font=dict(size=11, color="#2D3748"),
     xaxis=dict(
-        rangeslider=dict(visible=True, thickness=0.06),
         type="category",
         gridcolor="#F7FAFC",
         tickangle=-45,
