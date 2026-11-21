@@ -140,7 +140,7 @@ st.dataframe(
     use_container_width=True,
     hide_index=True,
 )
-st.caption("Biru muda = semua model Siklus 1 · Biru lebih cerah = terbaik dalam siklus ini (Random Forest, U=2.4432) · Semua model Siklus 1 gagal melampaui Naive (U > 1.0)")
+st.caption("Biru muda = semua model Siklus 1 · Biru lebih gelap = terbaik dalam siklus ini (Random Forest, U=2.4432) · Semua model Siklus 1 gagal melampaui Naive (U > 1.0)")
 
 # -- Tabel 2: Siklus 2 (Hibrida/Kombinasi) — tema merah burgundy muda --------
 def highlight_siklus2(row):
@@ -162,7 +162,7 @@ st.dataframe(
     use_container_width=True,
     hide_index=True,
 )
-st.caption("Merah muda = semua model Siklus 2 · Merah lebih cerah = terbaik dalam siklus ini (Naive+XGB_strict)")
+st.caption("Merah muda = semua model Siklus 2 · Merah lebih gelap = terbaik dalam siklus ini (Naive+XGB_strict)")
 
 st.divider()
 
