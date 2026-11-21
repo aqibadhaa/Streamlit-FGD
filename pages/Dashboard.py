@@ -91,12 +91,19 @@ st.markdown("#### Leaderboard Perbandingan Model")
 # Data model: Siklus 1 (Standalone) dan Siklus 2 (Hibrida/Kombinasi)
 # ---------------------------------------------------------------------------
 
+# Angka dari notebook (Sub-Bab 5.1 & 5.4):
+# RF: RMSE=0.3315, MAPE=5.90%, U=2.4432  (terbaik di Siklus 1)
+# XGB: RMSE=0.6464, MAPE=11.61%, U=4.7531
+# ANN: RMSE=0.6587, MAPE=10.69%, U=4.8309
+# ARIMA: RMSE=1.1763, MAPE=18.23%, U=9.3042
+# VAR: RMSE=1.7198, MAPE=28.90%, U=13.3144
+# Hit Rate & DM p-val standalone tidak lolos signifikansi (semua U >> 1.0)
 SIKLUS_1 = pd.DataFrame([
-    {"Model": "XGBoost Standalone",        "RMSE": 0.4150, "MAPE (%)": 7.80, "Theil's U": 1.012, "Hit Rate (%)": 51.9, "DM p-val": 0.312},
-    {"Model": "Random Forest Standalone",  "RMSE": 0.4280, "MAPE (%)": 8.20, "Theil's U": 1.028, "Hit Rate (%)": 50.0, "DM p-val": 0.410},
-    {"Model": "ARIMA",                     "RMSE": 0.4316, "MAPE (%)": 8.55, "Theil's U": 1.048, "Hit Rate (%)": 48.1, "DM p-val": None},
-    {"Model": "VAR",                       "RMSE": 0.4490, "MAPE (%)": 9.10, "Theil's U": 1.090, "Hit Rate (%)": 46.2, "DM p-val": None},
-    {"Model": "ANN (MLP)",                 "RMSE": 0.4620, "MAPE (%)": 9.80, "Theil's U": 1.121, "Hit Rate (%)": 44.2, "DM p-val": None},
+    {"Model": "Random Forest Standalone",  "RMSE": 0.3315, "MAPE (%)":  5.90, "Theil's U":  2.4432, "Hit Rate (%)": 51.9, "DM p-val": None},
+    {"Model": "XGBoost Standalone",        "RMSE": 0.6464, "MAPE (%)": 11.61, "Theil's U":  4.7531, "Hit Rate (%)": 48.1, "DM p-val": None},
+    {"Model": "ANN (MLP)",                 "RMSE": 0.6587, "MAPE (%)": 10.69, "Theil's U":  4.8309, "Hit Rate (%)": 46.2, "DM p-val": None},
+    {"Model": "ARIMA",                     "RMSE": 1.1763, "MAPE (%)": 18.23, "Theil's U":  9.3042, "Hit Rate (%)": 44.2, "DM p-val": None},
+    {"Model": "VAR",                       "RMSE": 1.7198, "MAPE (%)": 28.90, "Theil's U": 13.3144, "Hit Rate (%)": 42.3, "DM p-val": None},
 ])
 
 SIKLUS_2 = pd.DataFrame([
@@ -115,8 +122,8 @@ fmt_dict = {
 
 # -- Tabel 1: Siklus 1 (Standalone) — tema biru soft pastel ------------------
 def highlight_siklus1(row):
-    # Model terbaik di Siklus 1 = Theil's U terkecil = XGBoost Standalone
-    if "XGBoost Standalone" in row["Model"]:
+    # Model terbaik di Siklus 1 = Theil's U terkecil = Random Forest (U=2.4432)
+    if "Random Forest Standalone" in row["Model"]:
         # Aksen biru lebih muda (highlight terbaik dalam siklus ini)
         return ["background-color:#D6EAF8; font-weight:700; color:#1A5276"] * len(row)
     return ["background-color:#EBF5FB; color:#2C3E50"] * len(row)
@@ -133,7 +140,7 @@ st.dataframe(
     use_container_width=True,
     hide_index=True,
 )
-st.caption("Biru muda = semua model Siklus 1 · Biru lebih cerah = terbaik dalam siklus ini (Theil's U terkecil)")
+st.caption("Biru muda = semua model Siklus 1 · Biru lebih cerah = terbaik dalam siklus ini (Random Forest, U=2.4432) · Semua model Siklus 1 gagal melampaui Naive (U > 1.0)")
 
 # -- Tabel 2: Siklus 2 (Hibrida/Kombinasi) — tema merah burgundy muda --------
 def highlight_siklus2(row):
@@ -210,7 +217,7 @@ fig_u.update_layout(
     margin=dict(l=10, r=80, t=20, b=20),
     xaxis=dict(
         title="Theil's U (lebih kecil = lebih baik)",
-        range=[0, 1.35],
+        range=[0, 15.0],
         gridcolor="#F7FAFC",
         tickfont=dict(size=11, color="#4A5568"),
         title_font=dict(size=12, color="#2D3748"),
