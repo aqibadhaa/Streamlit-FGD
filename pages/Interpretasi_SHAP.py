@@ -16,15 +16,15 @@ from utils.data_loader import (
     PROVINSI_LIST, PROV_COLORS, FEATURES, TARGET,
 )
 
-st.set_page_config(page_title="SHAP · PDRB Jawa", page_icon="🧠", layout="wide")
+st.set_page_config(page_title="SHAP · PDRB Jawa", page_icon="SHAP", layout="wide")
 
 st.markdown("""
 <style>
-.accent-bar { height:4px; background:linear-gradient(90deg,#0A6E8A,#12B4D2);
+.accent-bar { height:3px; background:#B8CCE0;
               border-radius:2px; margin-bottom:1.2rem; }
-.shap-pos  { color:#059669; font-weight:600; }
-.shap-neg  { color:#DC2626; font-weight:600; }
-.info-box  { background:#EFF6FF; border-left:4px solid #3B82F6; padding:.8rem 1rem;
+.shap-pos  { color:#2F855A; font-weight:600; }
+.shap-neg  { color:#C0392B; font-weight:600; }
+.info-box  { background:#F0F7FC; border-left:4px solid #7BAEC8; padding:.8rem 1rem;
              border-radius:0 8px 8px 0; font-size:.88rem; margin:.6rem 0; }
 .insight-card { background:#F8FAFC; border:1px solid #E2E8F0; border-radius:10px;
                 padding:1rem 1.2rem; margin-bottom:.8rem; }
@@ -32,19 +32,19 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown('<div class="accent-bar"></div>', unsafe_allow_html=True)
-st.title("🧠 Interpretasi SHAP")
-st.caption("Explainable AI — Kontribusi variabel makroekonomi terhadap prediksi Naive+XGB_strict")
+st.title("Interpretasi SHAP")
+st.caption("Explainable AI - Kontribusi variabel makroekonomi terhadap prediksi Naive+XGB_strict")
 
 df = load_dataset()
 shap_values, X_shap, feature_cols = load_shap()
 
-# ── SHAP tersedia atau pakai data ilustratif ───────────────────────────────
+# -- SHAP tersedia atau pakai data ilustratif ---------------------------------
 USE_REAL_SHAP = shap_values is not None
 
 if not USE_REAL_SHAP:
     st.markdown("""
     <div class="info-box">
-    ℹ️ File SHAP belum tersedia — menampilkan <b>visualisasi ilustratif</b> berdasarkan
+    File SHAP belum tersedia - menampilkan <b>visualisasi ilustratif</b> berdasarkan
     korelasi data historis. Untuk nilai SHAP asli dari model:<br>
     <code>import joblib<br>
     joblib.dump(shap_values_arr, 'assets/shap_values.pkl')<br>
@@ -93,9 +93,9 @@ if not USE_REAL_SHAP:
         }
 
 
-# ═══════════════════════════════════════════════════════════════════════════
-# SECTION 1 — Global Feature Importance
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
+# SECTION 1 -- Global Feature Importance
+# ===========================================================================
 st.markdown("#### Feature Importance Global (Mean |SHAP|)")
 st.caption("Variabel yang paling sering dan paling besar mempengaruhi prediksi model")
 
@@ -115,12 +115,13 @@ def feat_group(f):
 
 feat_imp["Kelompok"] = feat_imp["Fitur"].apply(feat_group)
 
+# Palet warna pastel/muted — konsisten dengan halaman lain
 color_map = {
-    "Autoregressive Lag": "#0A6E8A",
-    "Makroekonomi":       "#10B981",
-    "Dummy Provinsi":     "#6366F1",
-    "Siklikal Kuartal":   "#F59E0B",
-    "Lainnya":            "#9CA3AF",
+    "Autoregressive Lag": "#4A90A4",
+    "Makroekonomi":       "#6DAA82",
+    "Dummy Provinsi":     "#8B7EC8",
+    "Siklikal Kuartal":   "#C4956A",
+    "Lainnya":            "#A0AEC0",
 }
 
 fig_imp = go.Figure()
@@ -134,22 +135,33 @@ for group, color in color_map.items():
         orientation="h",
         name=group,
         marker_color=color,
+        marker_line=dict(color="rgba(0,0,0,0.06)", width=0.8),
         text=[f"{v:.4f}" for v in sub["Mean |SHAP|"]],
         textposition="outside",
+        textfont=dict(size=11, color="#4A5568"),
     ))
 fig_imp.update_layout(
     height=380, barmode="stack",
-    xaxis_title="Mean |SHAP Value|",
-    yaxis=dict(autorange="reversed"),
-    legend=dict(orientation="h", y=-0.25),
+    xaxis=dict(
+        title="Mean |SHAP Value|",
+        gridcolor="#F7FAFC",
+        tickfont=dict(size=11, color="#4A5568"),
+        title_font=dict(size=12, color="#2D3748"),
+        linecolor="#CBD5E0",
+    ),
+    yaxis=dict(
+        autorange="reversed",
+        tickfont=dict(size=11, color="#4A5568"),
+        linecolor="#CBD5E0",
+    ),
+    legend=dict(orientation="h", y=-0.25, font=dict(size=10, color="#2D3748")),
     plot_bgcolor="white", paper_bgcolor="white",
     margin=dict(l=10, r=60, t=20, b=60),
-    font=dict(size=11),
+    font=dict(size=11, color="#2D3748"),
 )
-fig_imp.update_xaxes(gridcolor="#F1F5F9")
 st.plotly_chart(fig_imp, use_container_width=True)
 
-# ── Interpretasi naratif otomatis ──────────────────────────────────────────
+# -- Interpretasi naratif otomatis --------------------------------------------
 top1 = feat_imp.iloc[0]["Fitur"]
 top2 = feat_imp.iloc[1]["Fitur"]
 top3 = feat_imp.iloc[2]["Fitur"]
@@ -167,16 +179,16 @@ st.info(
     f"Variabel paling dominan adalah **{feat_label.get(top1, top1)}** · "
     f"**{feat_label.get(top2, top2)}** · "
     f"**{feat_label.get(top3, top3)}**. "
-    f"Ini konsisten dengan sifat deret waktu ekonomi yang sangat persisten — "
+    f"Ini konsisten dengan sifat deret waktu ekonomi yang sangat persisten - "
     f"nilai lag mendominasi prediksi jangka pendek, sementara variabel makro "
     f"memberikan koreksi arah siklus."
 )
 
 st.divider()
 
-# ═══════════════════════════════════════════════════════════════════════════
-# SECTION 2 — SHAP per Provinsi
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
+# SECTION 2 -- SHAP per Provinsi
+# ===========================================================================
 st.markdown("#### Profil Kepentingan Fitur per Provinsi")
 
 col_ctrl, _ = st.columns([2, 3])
@@ -205,41 +217,52 @@ with col_chart:
         x=feat_prov_df["Mean |SHAP|"],
         y=feat_prov_df["Fitur"],
         orientation="h",
-        marker_color=[color_map.get(g, "#9CA3AF") for g in feat_prov_df["Kelompok"]],
+        marker_color=[color_map.get(g, "#A0AEC0") for g in feat_prov_df["Kelompok"]],
+        marker_line=dict(color="rgba(0,0,0,0.06)", width=0.8),
         text=[f"{v:.4f}" for v in feat_prov_df["Mean |SHAP|"]],
         textposition="outside",
+        textfont=dict(size=11, color="#4A5568"),
     ))
     fig_prov.update_layout(
-        title=dict(text=f"Top-10 Fitur — {prov_sel}", font=dict(size=13)),
+        title=dict(text=f"Top-10 Fitur - {prov_sel}", font=dict(size=13, color="#2D3748")),
         height=340,
-        xaxis_title="Mean |SHAP|",
-        yaxis=dict(autorange="reversed"),
+        xaxis=dict(
+            title="Mean |SHAP|",
+            gridcolor="#F7FAFC",
+            tickfont=dict(size=11, color="#4A5568"),
+            title_font=dict(size=12, color="#2D3748"),
+            linecolor="#CBD5E0",
+        ),
+        yaxis=dict(
+            autorange="reversed",
+            tickfont=dict(size=11, color="#4A5568"),
+            linecolor="#CBD5E0",
+        ),
         plot_bgcolor="white", paper_bgcolor="white",
         margin=dict(l=10, r=60, t=40, b=20),
-        font=dict(size=11),
+        font=dict(size=11, color="#2D3748"),
     )
-    fig_prov.update_xaxes(gridcolor="#F1F5F9")
     st.plotly_chart(fig_prov, use_container_width=True)
 
 with col_insight:
     st.markdown(f"**Interpretasi · {prov_sel}**")
     for i, row in feat_prov_df.head(5).iterrows():
         shap_mean_signed = shap_prov[:, feature_cols.index(row["Fitur"])].mean()
-        arah = "mendorong naik ↑" if shap_mean_signed > 0 else "menekan turun ↓"
+        arah = "mendorong naik (positif)" if shap_mean_signed > 0 else "menekan turun (negatif)"
         arah_cls = "shap-pos" if shap_mean_signed > 0 else "shap-neg"
         st.markdown(f"""
         <div class="insight-card">
         <b>{row['Fitur']}</b><br>
-        Importansi: <b>{row['Mean |SHAP|']:.4f}</b> &nbsp;·&nbsp;
+        Importansi: <b>{row['Mean |SHAP|']:.4f}</b> &nbsp;&middot;&nbsp;
         Arah rata-rata: <span class="{arah_cls}">{arah}</span>
         </div>
         """, unsafe_allow_html=True)
 
 st.divider()
 
-# ═══════════════════════════════════════════════════════════════════════════
-# SECTION 3 — Waterfall Chart (1 observasi)
-# ═══════════════════════════════════════════════════════════════════════════
+# ===========================================================================
+# SECTION 3 -- Waterfall Chart (1 observasi)
+# ===========================================================================
 st.markdown("#### Waterfall Dekomposisi Prediksi (1 Observasi)")
 st.caption("Bagaimana tiap fitur berkontribusi pada satu prediksi spesifik")
 
@@ -274,7 +297,7 @@ for v in wf_values:
 wf_y_base.append(None)  # final
 
 colors_wf = ["#94A3B8"] + [
-    "#10B981" if v >= 0 else "#EF4444" for v in wf_values
+    "#6DAA82" if v >= 0 else "#C47E7E" for v in wf_values
 ]
 
 fig_wf = go.Figure(go.Waterfall(
@@ -282,35 +305,44 @@ fig_wf = go.Figure(go.Waterfall(
     measure=["absolute"] + ["relative"] * len(wf_values) + ["total"],
     x=["E[f(x)]"] + wf_labels + ["Prediksi"],
     y=[expected_val] + wf_values + [0],
-    connector={"line": {"color": "#CBD5E1"}},
-    increasing={"marker": {"color": "#10B981"}},
-    decreasing={"marker": {"color": "#EF4444"}},
-    totals={"marker": {"color": "#0A6E8A"}},
+    connector={"line": {"color": "#CBD5E0"}},
+    increasing={"marker": {"color": "#6DAA82"}},
+    decreasing={"marker": {"color": "#C47E7E"}},
+    totals={"marker": {"color": "#4A90A4"}},
     text=[f"{v:+.3f}" if i > 0 else f"{v:.2f}" for i, v in enumerate([expected_val] + wf_values + [sum([expected_val] + wf_values)])],
     textposition="outside",
 ))
 
 fig_wf.update_layout(
     height=420,
-    yaxis_title="PDRB Growth (%)",
+    yaxis=dict(
+        title="PDRB Growth (%)",
+        gridcolor="#F7FAFC",
+        tickfont=dict(size=11, color="#4A5568"),
+        title_font=dict(size=12, color="#2D3748"),
+        linecolor="#CBD5E0",
+    ),
+    xaxis=dict(
+        tickangle=-30,
+        tickfont=dict(size=11, color="#4A5568"),
+        linecolor="#CBD5E0",
+    ),
     plot_bgcolor="white", paper_bgcolor="white",
     margin=dict(l=10, r=10, t=20, b=20),
-    font=dict(size=10),
+    font=dict(size=10, color="#2D3748"),
     showlegend=False,
 )
-fig_wf.update_xaxes(tickangle=-30)
-fig_wf.update_yaxes(gridcolor="#F1F5F9")
 st.plotly_chart(fig_wf, use_container_width=True)
 
-# ── Caption waterfall ──────────────────────────────────────────────────────
+# -- Caption waterfall --------------------------------------------------------
 pred_final = expected_val + sum(wf_values)
 top_pos = [(feature_cols[i], shap_one[i]) for i in top_idx if shap_one[i] > 0]
 top_neg = [(feature_cols[i], shap_one[i]) for i in top_idx if shap_one[i] < 0]
 top_pos_sorted = sorted(top_pos, key=lambda x: -x[1])
 top_neg_sorted = sorted(top_neg, key=lambda x: x[1])
 
-pos_str = ", ".join([f"**{n}** (+{v:.3f})" for n, v in top_pos_sorted[:2]]) or "—"
-neg_str = ", ".join([f"**{n}** ({v:.3f})" for n, v in top_neg_sorted[:2]]) or "—"
+pos_str = ", ".join([f"**{n}** (+{v:.3f})" for n, v in top_pos_sorted[:2]]) or "-"
+neg_str = ", ".join([f"**{n}** ({v:.3f})" for n, v in top_neg_sorted[:2]]) or "-"
 
 st.info(
     f"Dari nilai baseline E[f(x)] = **{expected_val:.2f}%**, prediksi akhir untuk "
@@ -321,10 +353,10 @@ st.info(
 
 st.divider()
 
-# ═══════════════════════════════════════════════════════════════════════════
-# SECTION 4 — Heatmap kontribusi SHAP lintas provinsi
-# ═══════════════════════════════════════════════════════════════════════════
-with st.expander("📊 Heatmap Kontribusi SHAP per Provinsi", expanded=False):
+# ===========================================================================
+# SECTION 4 -- Heatmap kontribusi SHAP lintas provinsi
+# ===========================================================================
+with st.expander("Heatmap Kontribusi SHAP per Provinsi", expanded=False):
     st.caption("Rata-rata |SHAP| per fitur makroekonomi utama untuk setiap provinsi")
 
     main_feats = ["PDRB_lag1", "PDRB_lag4", "BI_Rate", "TPT_Pct", "Inflasi_MtoM_Pct", "PMA_JutaUSD"]
@@ -349,13 +381,19 @@ with st.expander("📊 Heatmap Kontribusi SHAP per Provinsi", expanded=False):
         text_auto=".3f",
         aspect="auto",
         labels=dict(color="Mean |SHAP|"),
-        title="Heatmap Mean |SHAP| per Provinsi × Fitur",
+        title="Heatmap Mean |SHAP| per Provinsi x Fitur",
     )
     fig_hm.update_layout(
         height=320,
-        font=dict(size=11),
+        font=dict(size=11, color="#2D3748"),
         margin=dict(l=10, r=10, t=40, b=20),
-        coloraxis_colorbar=dict(title="Mean |SHAP|"),
+        coloraxis_colorbar=dict(
+            title="Mean |SHAP|",
+            tickfont=dict(size=10, color="#4A5568"),
+            title_font=dict(size=11, color="#2D3748"),
+        ),
+        xaxis=dict(tickfont=dict(size=11, color="#4A5568")),
+        yaxis=dict(tickfont=dict(size=11, color="#4A5568")),
     )
     st.plotly_chart(fig_hm, use_container_width=True)
 
